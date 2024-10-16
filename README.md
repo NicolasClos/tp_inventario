@@ -1,0 +1,11 @@
+# PARA COMPILAR:
+
+make
+
+# PARA EJECUTAR POST COMPILACIÓN
+
+make run
+
+# PARA BORRAR LO COMPILADO
+
+make clean
