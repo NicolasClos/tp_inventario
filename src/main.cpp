@@ -8,6 +8,8 @@
 
 using namespace std;
 
+void productsMenu(NodeProduct*& list);
+
 void showMenu() {
     cout << endl << endl << CYAN << "Sistema de Gestión de Inventario" << endl << endl << RESET;
     cout << GREEN << "1. Gestionar productos\n" << RESET;
@@ -15,10 +17,17 @@ void showMenu() {
     cout << GREEN << "3. Gestionar clientes\n" << RESET;
     cout << GREEN << "4. Registrar pedidos\n" << RESET;
     cout << GREEN << "5. Control de stock\n" << RESET;
-    cout << RED << "6. Salir\n" << RESET;
+    cout << RED << endl << "6. Salir\n" << RESET;
 }
 
-int main() {
+int main() { 
+    
+    NodeProduct* productList = nullptr;
+    loadProducts(productList);
+
+    //  NodoProveedores* listaProveedores = NULL;
+    NodoClientes* listaClientes = NULL;
+
     int opcion;
     do {
         showMenu();
@@ -27,24 +36,38 @@ int main() {
 
         switch(opcion) {
             case 1:
-                // Llamar a funciones de productos
-                cout << YELLOW << "Gestionando productos...\n" << RESET;
+                cout << YELLOW << "\nGESTIÓN DE PRODUCTOS \n" << RESET;
+                productsMenu(productList);
                 break;
             case 2:
-                // Llamar a funciones de proveedores
                 cout << YELLOW << "Gestionando proveedores...\n" << RESET;
+                // Implementación de proveedores
                 break;
             case 3:
-                // Llamar a funciones de clientes
                 cout << YELLOW << "Gestionando clientes...\n" << RESET;
+                {
+                    infoClientes nuevoCliente;
+                    cout << "Ingrese ID del cliente: ";
+                    cin >> nuevoCliente.id;
+                    cout << "Ingrese nombre del cliente: ";
+                    cin.ignore();
+                    cin.getline(nuevoCliente.nombre, 50);
+                    cout << "Ingrese dirección del cliente: ";
+                    cin.getline(nuevoCliente.direccion, 50);
+                    cout << "Ingrese teléfono del cliente: ";
+                    cin >> nuevoCliente.telefono;
+
+                    agregarNodoCliente(listaClientes, nuevoCliente);
+                    mostrarNodoClientes(listaClientes);
+                }
                 break;
             case 4:
-                // Llamar a funciones de pedidos
                 cout << YELLOW << "Registrando pedidos...\n" << RESET;
+                // Implementación de pedidos
                 break;
             case 5:
-                // Llamar a funciones de control de stock
                 cout << YELLOW << "Controlando stock...\n" << RESET;
+                // Implementación de control de stock
                 break;
             case 6:
                 cout << RED << endl << endl << "Saliendo...\n" << endl << endl << RESET;
