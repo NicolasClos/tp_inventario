@@ -21,8 +21,10 @@ void addProduct(NodeProduct *&list)
     cin >> newProduct->info.price;
     cout << "Ingrese umbral de reposición: ";
     cin >> newProduct->info.restockThreshold;
-    cout << "Ingrese cantidad disponible: " << endl;
+    cout << "Ingrese cantidad disponible: ";
     cin >> newProduct->info.quantityAvailable;
+
+    cout << endl;
 
     newProduct->next = list;
     list = newProduct;
@@ -56,7 +58,7 @@ void modifyProduct(NodeProduct *list, int id)
         }
         current = current->next;
     }
-    cout << "Producto con ID " << id << " no encontrado.\n";
+        cout << endl << RED "Producto con ID " << id << " no encontrado.\n" << RESET;
 }
 
 void deleteProduct(NodeProduct *&list, int id)
@@ -72,7 +74,7 @@ void deleteProduct(NodeProduct *&list, int id)
 
     if (current == nullptr)
     {
-        cout << "Producto con ID " << id << " no encontrado.\n";
+        cout << endl << RED "Producto con ID " << id << " no encontrado.\n" << RESET;
         return;
     }
 
@@ -86,7 +88,7 @@ void deleteProduct(NodeProduct *&list, int id)
     }
 
     delete current;
-    cout << "Producto con ID " << id << " eliminado.\n";
+    cout << endl << RED "Producto con ID " << id << " eliminado.\n" << RESET;
     saveProducts(list);
 }
 
@@ -96,7 +98,7 @@ void showProducts(NodeProduct *list)
 
     if (current == nullptr)
     {
-        cout << RED << "No hay productos en el inventario.\n\n" << RESET;
+        cout << RED << "No hay productos en el inventario.\n" << RESET;
         return;
     }
 
