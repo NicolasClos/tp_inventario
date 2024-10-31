@@ -251,7 +251,8 @@ void loadSuppliers(NodeSupplier*& list) {
     while (true) {
         NodeSupplier* newSupplier = new NodeSupplier;
         if (fread(&newSupplier->info.id, sizeof(newSupplier->info.id), 1, archivo) != 1) break;
-        fread(&newSupplier->info.name, sizeof(newSupplier->info.name), 1, archivo);
+        
+        (&newSupplier->info.name, sizeof(newSupplier->info.name), 1, archivo);
         fread(&newSupplier->info.address, sizeof(newSupplier->info.address), 1, archivo);
         fread(&newSupplier->info.phoneNumber, sizeof(newSupplier->info.phoneNumber), 1, archivo);
 
