@@ -114,9 +114,8 @@ void showProducts(NodeProduct *list)
 
 void saveProducts(NodeProduct *list)
 {
-    ofstream file("data/products.txt");
-
-    if (!file)
+    FILE *archivo = fopen("data/products.dat", "wb+");  
+    if (!archivo)
     {
         cout << "Error al abrir el archivo.\n";
         return;
@@ -125,39 +124,43 @@ void saveProducts(NodeProduct *list)
     NodeProduct *current = list;
     while (current != nullptr)
     {
-        file << current->info.id << " " << current->info.name << " "
-             << current->info.price << " " << current->info.restockThreshold << " "
-             << current->info.quantityAvailable << endl;
+        fwrite(&current->info.id, sizeof(current->info.id), 1, archivo);
+        fwrite(&current->info.name, sizeof(current->info.name), 1, archivo);
+        fwrite(&current->info.price, sizeof(current->info.price), 1, archivo);
+        fwrite(&current->info.restockThreshold, sizeof(current->info.restockThreshold), 1, archivo);
+        fwrite(&current->info.quantityAvailable, sizeof(current->info.quantityAvailable), 1, archivo);
+
         current = current->next;
     }
-    file.close();
+
+    fclose(archivo);
 }
 
 void loadProducts(NodeProduct*& list) {
-    ifstream file("data/products.txt");
-    
-    if (!file) {
+    FILE *archivo = fopen("data/products.dat", "rb");
+
+    if (!archivo) {
         cout << "Error al abrir el archivo.\n";
         return;
     }
-    
+
     lastProductId = 0;
-    
-    while (!file.eof()) {
+
+    while (true) {
         NodeProduct* newProduct = new NodeProduct;
-        file >> newProduct->info.id >> newProduct->info.name >> newProduct->info.price 
-             >> newProduct->info.restockThreshold >> newProduct->info.quantityAvailable;
-        
-        if (file.eof()) break;
-        
+        if (fread(&newProduct->info.id, sizeof(newProduct->info.id), 1, archivo) != 1) break;
+        fread(&newProduct->info.name, sizeof(newProduct->info.name), 1, archivo);
+        fread(&newProduct->info.price, sizeof(newProduct->info.price), 1, archivo);
+        fread(&newProduct->info.restockThreshold, sizeof(newProduct->info.restockThreshold), 1, archivo);
+        fread(&newProduct->info.quantityAvailable, sizeof(newProduct->info.quantityAvailable), 1, archivo);
+        if (feof(archivo)) break;
         if (newProduct->info.id > lastProductId) {
             lastProductId = newProduct->info.id;
         }
-
         newProduct->next = list;
         list = newProduct;
     }
-    file.close();
+    fclose(archivo); 
 }
 
 void productsMenu(NodeProduct *&list)

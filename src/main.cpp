@@ -9,6 +9,7 @@
 using namespace std;
 
 void productsMenu(NodeProduct*& list);
+void suppliersMenu(NodeSupplier*& list);
 
 void showMenu() {
     cout << endl << endl << CYAN << "Sistema de Gestión de Inventario" << endl << endl << RESET;
@@ -23,9 +24,11 @@ void showMenu() {
 int main() { 
     
     NodeProduct* productList = nullptr;
+    NodeSupplier* supplierList = nullptr;
     loadProducts(productList);
+    loadSuppliers(supplierList);
 
-    //  NodoProveedores* listaProveedores = NULL;
+    // NodoProveedores* listaProveedores = NULL;
     NodoClientes* listaClientes = NULL;
 
     int opcion;
@@ -40,8 +43,8 @@ int main() {
                 productsMenu(productList);
                 break;
             case 2:
-                cout << YELLOW << "Gestionando proveedores...\n" << RESET;
-                // Implementación de proveedores
+                cout << YELLOW << "\nGESTIÓN DE PROVEEDORES \n" << RESET;
+                suppliersMenu(supplierList);
                 break;
             case 3:
                 cout << YELLOW << "Gestionando clientes...\n" << RESET;
