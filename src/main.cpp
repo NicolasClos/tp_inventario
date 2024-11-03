@@ -10,6 +10,8 @@ using namespace std;
 
 void productsMenu(NodeProduct*& list);
 void suppliersMenu(NodeSupplier*& list);
+void clientsMenu(NodeClient*& list);
+// void ordersMenu(NodeOrders*& list);
 
 void showMenu() {
     cout << endl << endl << CYAN << "Sistema de Gestión de Inventario" << endl << endl << RESET;
@@ -18,18 +20,19 @@ void showMenu() {
     cout << GREEN << "3. Gestionar clientes\n" << RESET;
     cout << GREEN << "4. Registrar pedidos\n" << RESET;
     cout << GREEN << "5. Control de stock\n" << RESET;
-    cout << RED << endl << "6. Salir\n" << RESET;
+    cout << RED << endl << "0. Salir\n" << RESET;
 }
 
 int main() { 
     
     NodeProduct* productList = nullptr;
     NodeSupplier* supplierList = nullptr;
+    NodeClient* clientsList = nullptr;
+    NodeOrders* ordersList = nullptr;
     loadProducts(productList);
     loadSuppliers(supplierList);
-
-    // NodoProveedores* listaProveedores = NULL;
-    NodoClientes* listaClientes = NULL;
+    loadClients(clientsList);
+    // loadOrders(orderslist);
 
     int opcion;
     do {
@@ -48,37 +51,23 @@ int main() {
                 break;
             case 3:
                 cout << YELLOW << "Gestionando clientes...\n" << RESET;
-                {
-                    infoClientes nuevoCliente;
-                    cout << "Ingrese ID del cliente: ";
-                    cin >> nuevoCliente.id;
-                    cout << "Ingrese nombre del cliente: ";
-                    cin.ignore();
-                    cin.getline(nuevoCliente.nombre, 50);
-                    cout << "Ingrese dirección del cliente: ";
-                    cin.getline(nuevoCliente.direccion, 50);
-                    cout << "Ingrese teléfono del cliente: ";
-                    cin >> nuevoCliente.telefono;
-
-                    agregarNodoCliente(listaClientes, nuevoCliente);
-                    mostrarNodoClientes(listaClientes);
-                }
+                clientsMenu(clientsList);
                 break;
             case 4:
                 cout << YELLOW << "Registrando pedidos...\n" << RESET;
-                // Implementación de pedidos
+                ordersMenu();
                 break;
             case 5:
                 cout << YELLOW << "Controlando stock...\n" << RESET;
                 // Implementación de control de stock
                 break;
-            case 6:
+            case 0:
                 cout << RED << endl << endl << "Saliendo...\n" << endl << endl << RESET;
                 break;
             default:
                 cout << RED << "Opción inválida\n" << RESET;
         }
-    } while (opcion != 6);
+    } while (opcion != 0);
 
     return 0;
 }

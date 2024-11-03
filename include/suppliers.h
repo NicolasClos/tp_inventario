@@ -5,11 +5,6 @@
 #include <fstream>
 #include <string>
 
-struct ProductSupplier {
-    int productId;
-    int supplierId;
-};
-
 struct NodeProductSupplier {
     int productId;
     NodeProductSupplier* next;

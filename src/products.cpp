@@ -177,7 +177,7 @@ void productsMenu(NodeProduct *&list)
              << RESET;
         cout << "4. Eliminar producto por ID" << endl
              << RESET;
-        cout << RED << endl << "5. Volver al menú principal" << endl << endl
+        cout << RED << endl << "0. Volver al menú principal" << endl << endl
              << RESET;
         cout << CYAN << "Seleccione una opción: "  
              << RESET;
@@ -208,5 +208,5 @@ void productsMenu(NodeProduct *&list)
             cout << RED << "Opción inválida\n"
                  << RESET;
         }
-    } while (option != 5);
+    } while (option != 0);
 }

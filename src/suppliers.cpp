@@ -23,23 +23,6 @@ void addProduct(NodeSupplier* supplier, int productId) {
     supplier->info.productList = newProduct;
 
     std::cout << "Producto con ID " << productId << " agregado correctamente." << std::endl;
-    /*
-    
-    ProductSupplier newProductSupplier;
-
-    newProductSupplier.productId = productId;
-
-    newProductSupplier.supplierId = supplier->info.id;
-
-    FILE *archivo = fopen("data/productsSuppliers.dat", "wb+");  
-
-    if (!archivo)
-    {
-        cout << "Error al abrir el archivo.\n";
-        return;
-    }
-    
-    fwrite(&newProductSupplier, sizeof(ProductSupplier),1, archivo);*/
 }
 
 void addSupplier(NodeSupplier *&list)
@@ -138,7 +121,7 @@ void updateSupplier(NodeSupplier* list, int id) {
         current = current->next;
         
     }
-    std::cout << endl << "Proveedor con ID " << id << " no encontrado.\n";
+    std::cout << endl << RED << "Proveedor con ID " << id << " no encontrado.\n" << RESET;
 }
 
 void deleteSupplier(NodeSupplier*& list, int id) {
@@ -151,7 +134,7 @@ void deleteSupplier(NodeSupplier*& list, int id) {
     }
 
     if (current == nullptr) {
-        std::cout << "Proveedor con ID " << id << " no encontrado.\n";
+        std::cout << RED << "Proveedor con ID " << id << " no encontrado.\n" << RESET;
         return;
     }
 
@@ -188,7 +171,7 @@ void showSuppliers(NodeSupplier* list) {
         std::cout << "Teléfono: " << current->info.phoneNumber << "\n";
 
         if (current->info.productList == nullptr) {
-            std::cout << "Este proveedor no tiene productos asignados.\n";
+            std::cout << "Este proveedor no tiene productos asignados.\n" << endl;
         } else {
             std::cout << "Productos provistos:\n";
             NodeProductSupplier* productCurrent = current->info.productList;
@@ -251,7 +234,6 @@ void loadSuppliers(NodeSupplier*& list) {
     while (true) {
         NodeSupplier* newSupplier = new NodeSupplier;
         if (fread(&newSupplier->info.id, sizeof(newSupplier->info.id), 1, archivo) != 1) break;
-        
         (&newSupplier->info.name, sizeof(newSupplier->info.name), 1, archivo);
         fread(&newSupplier->info.address, sizeof(newSupplier->info.address), 1, archivo);
         fread(&newSupplier->info.phoneNumber, sizeof(newSupplier->info.phoneNumber), 1, archivo);
@@ -299,7 +281,7 @@ void suppliersMenu(NodeSupplier *&list) {
              << "3. Modificar proveedor por ID" << endl
              << "4. Eliminar proveedor por ID" << endl
              << RED << endl
-             << "5. Volver al menú principal" << endl
+             << "0. Volver al menú principal" << endl
              << RESET;
         cout << CYAN << "Seleccione una opción: " << RESET;
 
@@ -328,5 +310,5 @@ void suppliersMenu(NodeSupplier *&list) {
         default:
             cout << RED << "Opción inválida\n" << RESET;
         }
-    } while (option != 5);
+    } while (option != 0);
 }

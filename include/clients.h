@@ -1,24 +1,33 @@
-#ifndef CLIENTES_H
-#define CLIENTES_H
+#ifndef CLIENTS_H
+#define CLIENTS_H
 
-struct NodoCompras {
-    
+#include <iostream>
+#include <fstream>
+#include <string>
+
+struct NodeClientPurchases {
+    int purchaseId;
+    NodeClientPurchases* next;
 };
 
-struct infoClientes {
+struct Client {
     int id;
-    char nombre[50];
-    char direccion[50];
-    int telefono;
-    NodoCompras* comprasAnteriores;
+    char name[50];
+    char address[50];
+    int phoneNumber;
+    NodeClientPurchases* purchasesList;
 };
 
-struct NodoClientes {
-    infoClientes info;
-    NodoClientes* sig;
+struct NodeClient {
+    Client info;
+    NodeClient* next;
 };
 
-void agregarNodoCliente(NodoClientes*& lista, infoClientes x);
-void mostrarNodoClientes(NodoClientes* lista);
+void addClient(NodeClient*& list);
+void updateClient(NodeClient* list, int id);
+void deleteClient(NodeClient*& list, int id);
+void showClients(NodeClient* list);
+void saveClients(NodeClient* list);
+void loadClients(NodeClient*& list);
 
 #endif
