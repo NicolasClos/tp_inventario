@@ -40,8 +40,8 @@ void addSupplier(NodeSupplier *&list)
     std::cout << "Ingrese la dirección del proveedor: ";
     std::cin.ignore();
     std::cin.getline(newSupplier->info.address, 50);
-    std::cin.ignore();
     std::cout << "Ingrese el número de teléfono del proveedor: ";
+    std::cin.ignore();
     std::cin >> newSupplier->info.phoneNumber;
     std::cout << "Ingrese los ID de productos que provee (0 para terminar): ";
     do {
@@ -275,6 +275,8 @@ void suppliersMenu(NodeSupplier *&list) {
     int option, id;
 
     do {
+        cout << YELLOW << "\nGESTIÓN DE PROVEEDORES \n" << RESET << endl;
+        cout << CYAN << "Seleccione una opción:" << endl << RESET;
         cout << endl
              << "1. Mostrar proveedores" << endl
              << "2. Agregar proveedor" << endl
@@ -283,7 +285,7 @@ void suppliersMenu(NodeSupplier *&list) {
              << RED << endl
              << "0. Volver al menú principal" << endl
              << RESET;
-        cout << CYAN << "Seleccione una opción: " << RESET;
+        cout << CYAN << endl << "Opción: " << RESET;
 
         cin >> option;
         cout << endl;

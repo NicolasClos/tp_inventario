@@ -17,7 +17,6 @@ struct NodeOrders{
     NodeOrders *next;
 };
 
-
 struct NodeCola{
     int info;
     NodeCola *next;
@@ -28,13 +27,14 @@ struct NodePila{
     NodePila *next;
 };
 
-void push(NodeOrders*& ordersList, order order);
-order pop(NodeOrders*& ordersList);
-void enqueue(NodeOrders*& ordersListFront, NodeOrders*& ordersListEnd, order order);
 order desenqueue(NodeOrders*& ordersListFront, NodeOrders*& ordersListEnd);
+order pop(NodeOrders*& ordersList);
+
+void push(NodeOrders*& ordersList, order order);
+void enqueue(NodeOrders*& ordersListFront, NodeOrders*& ordersListEnd, order order);
 void showCompletedOrders(NodeOrders*& ordersList);
 void showPendingOrders(NodeOrders*& ordersListFront, NodeOrders*& ordersListEnd);
-void ordersMenu();
+void loadOrders();
 void addOrder();
 void completeOrder();
 

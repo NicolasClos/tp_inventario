@@ -169,6 +169,8 @@ void productsMenu(NodeProduct *&list)
 
     do
     {
+        cout << YELLOW << "\nGESTIÓN DE PRODUCTOS \n" << RESET << endl;
+        cout << CYAN << "Seleccione una opción:" << endl << RESET;
         cout << endl << "1. Mostrar productos" << endl
              << RESET;
         cout << "2. Agregar producto" << endl
@@ -179,10 +181,12 @@ void productsMenu(NodeProduct *&list)
              << RESET;
         cout << RED << endl << "0. Volver al menú principal" << endl << endl
              << RESET;
-        cout << CYAN << "Seleccione una opción: "  
+        cout << CYAN << "Opción: "  
              << RESET;
 
-        cin >> option; cout << endl;
+        cin >> option; 
+        
+        cout << endl;
 
         switch (option)
         {
@@ -209,4 +213,22 @@ void productsMenu(NodeProduct *&list)
                  << RESET;
         }
     } while (option != 0);
+}
+
+void updateStock(NodeProduct *list, int id, int cantidadARestar){
+    NodeProduct *current = list;
+    while (current != nullptr)
+    {
+        if (current->info.id == id){
+            list->info.quantityAvailable -= cantidadARestar;
+            if(list->info.quantityAvailable < list->info.restockThreshold){
+                int diff = list->info.restockThreshold-list->info.quantityAvailable;
+                cout << endl << RED << "NECESITA REPONER AL MENOS " << diff << " CANTIDAD DE "<< list->info.name << "." << endl << RESET;
+            }
+            saveProducts(list);
+            return;
+        }
+        current = current->next;
+    }
+    cout << endl << RED "Producto con ID " << id << " no encontrado.\n" << RESET;
 }

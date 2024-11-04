@@ -29,8 +29,8 @@ void addClient(NodeClient *&list)
     std::cout << "Ingrese la dirección del cliente: ";
     std::cin.ignore();
     std::cin.getline(newClient->info.address, 50);
-    std::cin.ignore();
     std::cout << "Ingrese el número de teléfono del cliente: ";
+    std::cin.ignore();
     std::cin >> newClient->info.phoneNumber;
     std::cout << endl;
 
@@ -201,7 +201,7 @@ void loadClients(NodeClient*& list) {
 
         if (feof(archivo)) break;
 
-        if (newClient->info.id > lastClientId) {
+        if (newClient && newClient->info.id > lastClientId) {
             lastClientId = newClient->info.id;
         }
 
@@ -215,18 +215,20 @@ void loadClients(NodeClient*& list) {
 void clientsMenu(NodeClient *&list) {
     int option, id;
     do {
-        cout << endl
-             << "1. Mostrar clientes" << endl
-             << "2. Agregar cliente" << endl
-             << "3. Modificar cliente por ID" << endl
-             << "4. Eliminar cliente por ID" << endl
-             << RED << endl
-             << "0. Volver al menú principal" << endl
-             << RESET;
-        cout << CYAN << "Seleccione una opción: " << RESET;
+        cout << YELLOW << "\nGESTIÓN DE CLIENTES \n" << RESET << endl;
+        cout << CYAN << "Seleccione una opción:" << endl << endl << RESET
+        << "1. Mostrar clientes" << endl
+        << "2. Agregar cliente" << endl
+        << "3. Modificar cliente por ID" << endl
+        << "4. Eliminar cliente por ID" << endl
+        << RED << endl
+        << "0. Volver al menú principal" << endl
+        << RESET;
+        cout << CYAN << endl << "Opción: " << RESET;
 
         cin >> option;
-        cout << endl;
+        
+        std::cout << endl << endl <<"---------------------------\n" << endl << endl;
 
         switch (option) {
         case 1:

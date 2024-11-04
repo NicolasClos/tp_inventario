@@ -24,5 +24,6 @@ void deleteProduct(NodeProduct*& list, int id);
 void showProducts(NodeProduct* list);
 void saveProducts(NodeProduct* list);
 void loadProducts(NodeProduct*& list);
+void updateStock(NodeProduct *list, int id, int cantidadARestar);
 
 #endif
