@@ -7,13 +7,12 @@ using namespace std;
 
 int lastClientId = 0;
 
-void addPurchase(NodeClient* supplier, int purchaseId) {
-    // Cada vez que se hace una compra se debe ejecutar ese addPurchase para agregar la compra al cliente
-    NodeClientPurchases* actual = supplier->info.purchasesList;
+void addPurchase(NodeClient* clientList, int purchaseId) {
     NodeClientPurchases* newPurchase = new NodeClientPurchases;
     newPurchase->purchaseId = purchaseId;
-    newPurchase->next = supplier->info.purchasesList;
-    supplier->info.purchasesList = newPurchase;
+    newPurchase->next = clientList->info.purchasesList;
+    clientList->info.purchasesList = newPurchase;
+    saveClients(clientList);
 }
 
 void addClient(NodeClient *&list)
@@ -27,10 +26,8 @@ void addClient(NodeClient *&list)
     std::cin.ignore();
     std::cin.getline(newClient->info.name, 50);
     std::cout << "Ingrese la dirección del cliente: ";
-    std::cin.ignore();
     std::cin.getline(newClient->info.address, 50);
     std::cout << "Ingrese el número de teléfono del cliente: ";
-    std::cin.ignore();
     std::cin >> newClient->info.phoneNumber;
     std::cout << endl;
 
@@ -59,9 +56,8 @@ void updateClient(NodeClient* list, int id) {
             return;
         }
         current = current->next;
-        
     }
-    std::cout << endl << RED << "Cliente con ID " << id << " no encontrado.\n" << RESET;
+    std::cout << endl << RED << "Cliente con ID " << id << " no encontrado." << RESET;
 }
 
 void deleteClient(NodeClient*& list, int id) {
@@ -74,7 +70,7 @@ void deleteClient(NodeClient*& list, int id) {
     }
 
     if (current == nullptr) {
-        std::cout << RED << "Cliente con ID " << id << " no encontrado.\n" << RESET;
+        std::cout << RED << endl << "Cliente con ID " << id << " no encontrado." << RESET;
         return;
     }
 
@@ -93,46 +89,48 @@ void deleteClient(NodeClient*& list, int id) {
     }
 
     delete current;
+    
+    saveClients(list);
 
-    std::cout << YELLOW << endl << "Cliente con ID " << id << " eliminado correctamente.\n";
+    std::cout << GREEN << endl << "Cliente con ID " << id << " eliminado correctamente." << RESET;
 }
 
 void showClients(NodeClient* list) {
     NodeClient* current = list;
 
     if (current == nullptr) {
-        std::cout << RED << "No hay clientes registrados.\n" << RESET;
+        std::cout << RED << endl << "No hay clientes registrados.\n" << RESET;
         return;
     }
 
-    while (current != nullptr) {
-        std::cout << "Cliente ID: " << current->info.id << "\n";
-        std::cout << "Nombre: " << current->info.name << "\n";
-        std::cout << "Dirección: " << current->info.address << "\n";
-        std::cout << "Teléfono: " << current->info.phoneNumber << "\n";
+    do {
+        std::cout << "Cliente ID: " << YELLOW << current->info.id << RESET << "\n";
+        std::cout << "Nombre: " << YELLOW << current->info.name << RESET << "\n";
+        std::cout << "Dirección: " << YELLOW << current->info.address << RESET << "\n";
+        std::cout << "Teléfono: " << YELLOW << current->info.phoneNumber << RESET << "\n\n";
 
         if (current->info.purchasesList == nullptr) {
-            std::cout << "Este cliente no ha realizado ninguna compra.\n" << endl;
+            std::cout << endl << RED << current->info.name << " no ha realizado ninguna compra aún.\n" << RESET << endl;
         } else {
             std::cout << "Compras realizadas:\n";
             NodeClientPurchases* currentPurchase = current->info.purchasesList;
             while (currentPurchase != nullptr) {
-                std::cout << "- ID de Compra: " << currentPurchase->purchaseId << "\n";
+                std::cout << "- ID de Compra: " << currentPurchase->purchaseId << endl;
                 currentPurchase = currentPurchase->next;
             }
+            cout << endl;
         }
 
         std::cout << "---------------------------\n" << endl;
         current = current->next;
-    }
+    } while (current != nullptr);
 }
 
 void saveClients(NodeClient *list)
 {
     FILE *archivo = fopen("data/clients.dat", "wb+");  
-    if (!archivo)
-    {
-        cout << "Error al abrir el archivo.\n";
+    if (!archivo){
+        cout << "Archivo de clientes no encontrado.\n";
         return;
     }
 
@@ -174,20 +172,37 @@ void loadClients(NodeClient*& list) {
 
     while (true) {
         NodeClient* newClient = new NodeClient;
-        if (fread(&newClient->info.id, sizeof(newClient->info.id), 1, archivo) != 1) break;
-        (&newClient->info.name, sizeof(newClient->info.name), 1, archivo);
-        fread(&newClient->info.address, sizeof(newClient->info.address), 1, archivo);
-        fread(&newClient->info.phoneNumber, sizeof(newClient->info.phoneNumber), 1, archivo);
-
+        if (fread(&newClient->info.id, sizeof(newClient->info.id), 1, archivo) != 1) {
+            delete newClient;
+            break;
+        }
+        if (fread(&newClient->info.name, sizeof(newClient->info.name), 1, archivo) != 1) {
+            delete newClient;
+            break;
+        }
+        if (fread(&newClient->info.address, sizeof(newClient->info.address), 1, archivo) != 1) {
+            delete newClient;
+            break;
+        }
+        if (fread(&newClient->info.phoneNumber, sizeof(newClient->info.phoneNumber), 1, archivo) != 1) {
+            delete newClient;
+            break;
+        }
         size_t purchaseCount;
-        fread(&purchaseCount, sizeof(purchaseCount), 1, archivo);
+        if (fread(&purchaseCount, sizeof(purchaseCount), 1, archivo) != 1) {
+            delete newClient;
+            break;
+        }
 
         NodeClientPurchases* purchasesList = nullptr;
         NodeClientPurchases* lastPurchase = nullptr;
 
         for (size_t i = 0; i < purchaseCount; i++) {
             NodeClientPurchases* newPurchase = new NodeClientPurchases;
-            fread(&newPurchase->purchaseId, sizeof(newPurchase->purchaseId), 1, archivo);
+            if (fread(&newPurchase->purchaseId, sizeof(newPurchase->purchaseId), 1, archivo) != 1) {
+                delete newPurchase;
+                break;
+            }
             newPurchase->next = nullptr;
             if (purchasesList == nullptr) {
                 purchasesList = newPurchase;
@@ -199,9 +214,7 @@ void loadClients(NodeClient*& list) {
 
         newClient->info.purchasesList = purchasesList;
 
-        if (feof(archivo)) break;
-
-        if (newClient && newClient->info.id > lastClientId) {
+        if (newClient->info.id > lastClientId) {
             lastClientId = newClient->info.id;
         }
 
@@ -215,6 +228,7 @@ void loadClients(NodeClient*& list) {
 void clientsMenu(NodeClient *&list) {
     int option, id;
     do {
+        std::cout << endl << endl <<"---------------------------\n" << endl;
         cout << YELLOW << "\nGESTIÓN DE CLIENTES \n" << RESET << endl;
         cout << CYAN << "Seleccione una opción:" << endl << endl << RESET
         << "1. Mostrar clientes" << endl
@@ -228,7 +242,7 @@ void clientsMenu(NodeClient *&list) {
 
         cin >> option;
         
-        std::cout << endl << endl <<"---------------------------\n" << endl << endl;
+        std::cout << endl <<"---------------------------\n" << endl;
 
         switch (option) {
         case 1:
@@ -247,10 +261,18 @@ void clientsMenu(NodeClient *&list) {
             cin >> id;
             deleteClient(list, id);
             break;
-        case 5:
+        case 0:
             break;
         default:
             cout << RED << "Opción inválida\n" << RESET;
         }
     } while (option != 0);
+}
+
+bool checkClientExists(NodeClient *& list, int id){
+    NodeClient *current = list;
+    while (current != nullptr){
+        if (current->info.id == id) return true;
+        current = current->next;
+    } return false;
 }

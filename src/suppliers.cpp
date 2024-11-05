@@ -22,7 +22,7 @@ void addProduct(NodeSupplier* supplier, int productId) {
     newProduct->next = supplier->info.productList;
     supplier->info.productList = newProduct;
 
-    std::cout << "Producto con ID " << productId << " agregado correctamente." << std::endl;
+    std::cout << GREEN << "Producto con ID " << productId << " agregado correctamente." << RESET << std::endl;
 }
 
 void addSupplier(NodeSupplier *&list)
@@ -34,14 +34,12 @@ void addSupplier(NodeSupplier *&list)
 
     int suppliedProductID;
     
-    std::cout << endl << "Ingrese nombre del proveedor: ";
+    std::cout << "Ingrese nombre del proveedor: ";
     std::cin.ignore();
     std::cin.getline(newSupplier->info.name, 50);
     std::cout << "Ingrese la dirección del proveedor: ";
-    std::cin.ignore();
     std::cin.getline(newSupplier->info.address, 50);
     std::cout << "Ingrese el número de teléfono del proveedor: ";
-    std::cin.ignore();
     std::cin >> newSupplier->info.phoneNumber;
     std::cout << "Ingrese los ID de productos que provee (0 para terminar): ";
     do {
@@ -114,14 +112,14 @@ void updateSupplier(NodeSupplier* list, int id) {
             }
 
 
-            std::cout << "Proveedor actualizado correctamente.\n";
+            std::cout << GREEN << "Proveedor actualizado correctamente.\n" << RESET;
             saveSuppliers(list);
             return;
         }
         current = current->next;
         
     }
-    std::cout << endl << RED << "Proveedor con ID " << id << " no encontrado.\n" << RESET;
+    std::cout << endl << RED << "Proveedor con ID " << id << " no encontrado." << RESET;
 }
 
 void deleteSupplier(NodeSupplier*& list, int id) {
@@ -134,7 +132,7 @@ void deleteSupplier(NodeSupplier*& list, int id) {
     }
 
     if (current == nullptr) {
-        std::cout << RED << "Proveedor con ID " << id << " no encontrado.\n" << RESET;
+        std::cout << RED << "Proveedor con ID " << id << " no encontrado." << RESET;
         return;
     }
 
@@ -153,14 +151,17 @@ void deleteSupplier(NodeSupplier*& list, int id) {
 
     delete current;
 
-    std::cout << YELLOW << endl << "Proveedor con ID " << id << " eliminado correctamente.\n";
+    saveSuppliers(list);
+
+    std::cout << GREEN << endl << "Proveedor con ID " << id << " eliminado correctamente." << RESET;
 }
 
 void showSuppliers(NodeSupplier* list) {
     NodeSupplier* current = list;
 
     if (current == nullptr) {
-        std::cout << RED << "No hay proveedores registrados.\n" << RESET;
+        
+        cout << RED << endl << "No hay proveedores registrados.\n" << RESET;
         return;
     }
 
@@ -225,7 +226,7 @@ void loadSuppliers(NodeSupplier*& list) {
     FILE *archivo = fopen("data/suppliers.dat", "rb");
 
     if (!archivo) {
-        cout << "Error al abrir el archivo.\n";
+        cout << "Archivo de proveedores no encontrado.\n";
         return;
     }
 
@@ -233,20 +234,37 @@ void loadSuppliers(NodeSupplier*& list) {
 
     while (true) {
         NodeSupplier* newSupplier = new NodeSupplier;
-        if (fread(&newSupplier->info.id, sizeof(newSupplier->info.id), 1, archivo) != 1) break;
-        (&newSupplier->info.name, sizeof(newSupplier->info.name), 1, archivo);
-        fread(&newSupplier->info.address, sizeof(newSupplier->info.address), 1, archivo);
-        fread(&newSupplier->info.phoneNumber, sizeof(newSupplier->info.phoneNumber), 1, archivo);
-
+        if (fread(&newSupplier->info.id, sizeof(newSupplier->info.id), 1, archivo) != 1) {
+            delete newSupplier;
+            break;
+        }
+        if (fread(&newSupplier->info.name, sizeof(newSupplier->info.name), 1, archivo) != 1) {
+            delete newSupplier;
+            break;
+        }
+        if (fread(&newSupplier->info.address, sizeof(newSupplier->info.address), 1, archivo) != 1){
+            delete newSupplier;
+            break;
+        }
+        if (fread(&newSupplier->info.phoneNumber, sizeof(newSupplier->info.phoneNumber), 1, archivo) != 1) {
+            delete newSupplier;
+            break;
+        }
         size_t productCount;
-        fread(&productCount, sizeof(productCount), 1, archivo);
+        if (fread(&productCount, sizeof(productCount), 1, archivo) != 1) {
+            delete newSupplier;
+            break;
+        }
 
         NodeProductSupplier* productList = nullptr;
         NodeProductSupplier* lastProduct = nullptr;
 
         for (size_t i = 0; i < productCount; i++) {
             NodeProductSupplier* newProduct = new NodeProductSupplier;
-            fread(&newProduct->productId, sizeof(newProduct->productId), 1, archivo);
+            if (fread(&newProduct->productId, sizeof(newProduct->productId), 1, archivo) != 1) {
+                delete newProduct;
+                break;
+            }
             newProduct->next = nullptr;
             if (productList == nullptr) {
                 productList = newProduct;
@@ -258,12 +276,9 @@ void loadSuppliers(NodeSupplier*& list) {
 
         newSupplier->info.productList = productList;
 
-        if (feof(archivo)) break;
-
         if (newSupplier->info.id > lastSupplierId) {
             lastSupplierId = newSupplier->info.id;
         }
-
         newSupplier->next = list;
         list = newSupplier;
     }
@@ -275,6 +290,7 @@ void suppliersMenu(NodeSupplier *&list) {
     int option, id;
 
     do {
+        std::cout << endl << endl <<"---------------------------\n" << endl;
         cout << YELLOW << "\nGESTIÓN DE PROVEEDORES \n" << RESET << endl;
         cout << CYAN << "Seleccione una opción:" << endl << RESET;
         cout << endl
@@ -288,7 +304,7 @@ void suppliersMenu(NodeSupplier *&list) {
         cout << CYAN << endl << "Opción: " << RESET;
 
         cin >> option;
-        cout << endl;
+        cout << endl << "---------------------------\n" << endl;
 
         switch (option) {
         case 1:

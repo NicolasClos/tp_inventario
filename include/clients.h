@@ -23,11 +23,13 @@ struct NodeClient {
     NodeClient* next;
 };
 
+void addPurchase(NodeClient* supplier, int purchaseId);
 void addClient(NodeClient*& list);
 void updateClient(NodeClient* list, int id);
 void deleteClient(NodeClient*& list, int id);
 void showClients(NodeClient* list);
 void saveClients(NodeClient* list);
 void loadClients(NodeClient*& list);
+bool checkClientExists(NodeClient *& list, int id);
 
 #endif

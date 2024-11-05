@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "products.h"
+#include "clients.h"
 
 struct order{
     int id;
@@ -34,8 +36,10 @@ void push(NodeOrders*& ordersList, order order);
 void enqueue(NodeOrders*& ordersListFront, NodeOrders*& ordersListEnd, order order);
 void showCompletedOrders(NodeOrders*& ordersList);
 void showPendingOrders(NodeOrders*& ordersListFront, NodeOrders*& ordersListEnd);
-void loadOrders();
-void addOrder();
-void completeOrder();
+void loadOrders(NodeOrders*& list, const char* filename);
+void saveOrders(NodeOrders*& list, const char* filename);
+void addOrder(NodeProduct*& productList, NodeClient*& clientList, NodeOrders*& colaVfte, NodeOrders*& colaVfin);
+void ordersMenu(NodeProduct*& productList, NodeClient*& clientList, NodeOrders*& colaVfte, NodeOrders*& colaVfin, NodeOrders*& pila);
+void completeOrder(NodeProduct*& productList, NodeClient*& clientList, NodeOrders*& pila, NodeOrders*& colaVfte, NodeOrders*& colaVfin);
 
 #endif

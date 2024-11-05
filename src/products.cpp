@@ -14,7 +14,7 @@ void addProduct(NodeProduct *&list)
     lastProductId++;
     newProduct->info.id = lastProductId;
     
-    cout << endl << "Ingrese nombre del producto: ";
+    cout << "Ingrese nombre del producto: ";
     cin.ignore();
     cin.getline(newProduct->info.name, 50);
     cout << "Ingrese precio: ";
@@ -58,7 +58,7 @@ void modifyProduct(NodeProduct *list, int id)
         }
         current = current->next;
     }
-        cout << endl << RED "Producto con ID " << id << " no encontrado.\n" << RESET;
+        cout << endl << RED "Producto con ID " << id << " no encontrado." << RESET;
 }
 
 void deleteProduct(NodeProduct *&list, int id)
@@ -74,7 +74,7 @@ void deleteProduct(NodeProduct *&list, int id)
 
     if (current == nullptr)
     {
-        cout << endl << RED "Producto con ID " << id << " no encontrado.\n" << RESET;
+        cout << endl << RED "Producto con ID " << id << " no encontrado." << RESET;
         return;
     }
 
@@ -88,7 +88,7 @@ void deleteProduct(NodeProduct *&list, int id)
     }
 
     delete current;
-    cout << endl << RED "Producto con ID " << id << " eliminado.\n" << RESET;
+    cout << endl << RED "Producto con ID " << id << " eliminado." << RESET;
     saveProducts(list);
 }
 
@@ -98,16 +98,18 @@ void showProducts(NodeProduct *list)
 
     if (current == nullptr)
     {
-        cout << RED << "No hay productos en el inventario.\n" << RESET;
+        cout << RED << endl << "No hay productos en el inventario.\n" << RESET;
         return;
     }
 
     while (current != nullptr)
     {
-        cout << YELLOW << "ID: " << current->info.id << ", Nombre: " << current->info.name
-             << ", Precio: " << current->info.price << ", Umbral de reposición: "
-             << current->info.restockThreshold << ", Cantidad disponible: "
-             << current->info.quantityAvailable << endl << RESET;
+        cout << "ID: " << YELLOW << current->info.id << RESET << endl;
+        cout << "Nombre: " << YELLOW << current->info.name << RESET << endl;
+        cout << "Precio: " YELLOW << current->info.price << RESET << endl;
+        cout << "Umbral de reposición: " << YELLOW << current->info.restockThreshold << RESET << endl;
+        cout << "Cantidad disponible: " << YELLOW << current->info.quantityAvailable << RESET << endl;
+        std::cout << endl <<"---------------------------\n" << endl;
         current = current->next;
     }
 }
@@ -140,7 +142,7 @@ void loadProducts(NodeProduct*& list) {
     FILE *archivo = fopen("data/products.dat", "rb");
 
     if (!archivo) {
-        cout << "Error al abrir el archivo.\n";
+        cout << "Archivo de productos no encontrado.\n";
         return;
     }
 
@@ -148,20 +150,36 @@ void loadProducts(NodeProduct*& list) {
 
     while (true) {
         NodeProduct* newProduct = new NodeProduct;
-        if (fread(&newProduct->info.id, sizeof(newProduct->info.id), 1, archivo) != 1) break;
-        fread(&newProduct->info.name, sizeof(newProduct->info.name), 1, archivo);
-        fread(&newProduct->info.price, sizeof(newProduct->info.price), 1, archivo);
-        fread(&newProduct->info.restockThreshold, sizeof(newProduct->info.restockThreshold), 1, archivo);
-        fread(&newProduct->info.quantityAvailable, sizeof(newProduct->info.quantityAvailable), 1, archivo);
-        if (feof(archivo)) break;
+        if (fread(&newProduct->info.id, sizeof(newProduct->info.id), 1, archivo) != 1) {
+            delete newProduct;
+            break;
+        }
+        if (fread(&newProduct->info.name, sizeof(newProduct->info.name), 1, archivo) != 1) {
+            delete newProduct;
+            break;
+        }
+        if (fread(&newProduct->info.price, sizeof(newProduct->info.price), 1, archivo) != 1) {
+            delete newProduct;
+            break;
+        }
+        if (fread(&newProduct->info.restockThreshold, sizeof(newProduct->info.restockThreshold), 1, archivo) != 1) {
+            delete newProduct;
+            break;
+        }
+        if (fread(&newProduct->info.quantityAvailable, sizeof(newProduct->info.quantityAvailable), 1, archivo) != 1) {
+            delete newProduct;
+            break;
+        }
         if (newProduct->info.id > lastProductId) {
             lastProductId = newProduct->info.id;
         }
         newProduct->next = list;
         list = newProduct;
     }
+
     fclose(archivo); 
 }
+
 
 void productsMenu(NodeProduct *&list)
 {
@@ -169,6 +187,7 @@ void productsMenu(NodeProduct *&list)
 
     do
     {
+        std::cout << endl << endl <<"---------------------------\n" << endl;
         cout << YELLOW << "\nGESTIÓN DE PRODUCTOS \n" << RESET << endl;
         cout << CYAN << "Seleccione una opción:" << endl << RESET;
         cout << endl << "1. Mostrar productos" << endl
@@ -186,7 +205,7 @@ void productsMenu(NodeProduct *&list)
 
         cin >> option; 
         
-        cout << endl;
+         std::cout << endl <<"---------------------------\n" << endl;
 
         switch (option)
         {
@@ -230,5 +249,24 @@ void updateStock(NodeProduct *list, int id, int cantidadARestar){
         }
         current = current->next;
     }
-    cout << endl << RED "Producto con ID " << id << " no encontrado.\n" << RESET;
+    cout << endl << RED "Producto con ID " << id << " no encontrado." << RESET;
 }
+
+bool checkProductExists(NodeProduct *& list, int id){
+    NodeProduct *current = list;
+    while (current != nullptr){
+        if (current->info.id == id) return true;
+        current = current->next;
+    } return false;
+}
+
+bool checkAvailability(NodeProduct *& list, int id, int quantity){
+    NodeProduct *current = list;
+    while (current != nullptr){
+        if (current->info.id == id){
+            if(current->info.quantityAvailable >= quantity) return true;
+            return false;
+        };
+        current = current->next;
+    } return false;
+};

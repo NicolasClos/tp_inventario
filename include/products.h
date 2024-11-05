@@ -26,4 +26,7 @@ void saveProducts(NodeProduct* list);
 void loadProducts(NodeProduct*& list);
 void updateStock(NodeProduct *list, int id, int cantidadARestar);
 
+bool checkProductExists(NodeProduct *& list, int id);
+bool checkAvailability(NodeProduct *& list, int id, int quantity);
+
 #endif
